@@ -1,0 +1,48 @@
+﻿@page "/"
+@inject HttpClient Http
+
+<h1>Toki Pona Dictionary</h1>
+
+<input name="search" @onchange="@((ChangeEventArgs __e) => OnChangeSearch(__e))" width="80%">
+
+@if (words == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Definition</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var word in matchingWords) {
+                <tr>
+                    <td>@word.Name</td>
+                    <td>@word.Definition</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public string CurrentSearch;
+    private Word[] matchingWords;
+    private Word[] words;
+
+    private void OnChangeSearch(ChangeEventArgs e) {
+        CurrentSearch = e.Value.ToString().Trim().ToLowerInvariant();
+        matchingWords = words.Where(w => w.Name.Contains(CurrentSearch) || w.Definition.Contains(CurrentSearch)).ToArray();
+    }
+
+    protected override async Task OnInitializedAsync() {
+        words = await Http.GetFromJsonAsync<Word[]>("data/words.json");
+        matchingWords = words;
+    }
+
+    public class Word {
+        public string Name { get; set; }
+        public string Definition { get; set; }
+    }
+}
