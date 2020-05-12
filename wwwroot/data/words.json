@@ -1,6 +1,6 @@
 [
     {
-        "name": "a  or  kin",
+        "name": "a",
         "definition": "PARTICLE (emphasis, emotion or confirmation)"
     },
     {
@@ -16,7 +16,11 @@
         "definition": "VERB to hunt, forage"
     },
     {
-        "name": "ale  or  ali",
+        "name": "ale",
+        "definition": "ADJECTIVE all; abundant, countless, bountiful, every, plentiful\nNOUN abundance, everything, life, universe\nNUMBER 100"
+    },
+    {
+        "name": "ali",
         "definition": "ADJECTIVE all; abundant, countless, bountiful, every, plentiful\nNOUN abundance, everything, life, universe\nNUMBER 100"
     },
     {
@@ -108,6 +112,10 @@
         "definition": "NOUN fruit, vegetable, mushroom"
     },
     {
+        "name": "kin",
+        "definition": "PARTICLE (emphasis, emotion or confirmation)"
+    },
+    {
         "name": "kiwen",
         "definition": "NOUN hard object, metal, rock, stone"
     },
@@ -184,7 +192,11 @@
         "definition": "NOUN arm, hand, tactile organ\nNUMBER five"
     },
     {
-        "name": "lukin  or  oko",
+        "name": "lukin",
+        "definition": "NOUN eye\nVERB to look at, see, examine, observe, read, watch\nPRE - VERB to seek, look for, try to"
+    },
+    {
+        "name": "oko",
         "definition": "NOUN eye\nVERB to look at, see, examine, observe, read, watch\nPRE - VERB to seek, look for, try to"
     },
     {
@@ -372,7 +384,11 @@
         "definition": "NOUN round or circular thing; ball, circle, cycle, sphere, wheel\nADJECTIVE of one year"
     },
     {
-        "name": "sin or namako",
+        "name": "sin",
+        "definition": "ADJECTIVE new, fresh; additional, another, extra"
+    },
+    {
+        "name": "namako",
         "definition": "ADJECTIVE new, fresh; additional, another, extra"
     },
     {

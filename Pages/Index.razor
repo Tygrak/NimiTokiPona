@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Linq;
 @inject HttpClient Http
 
 <h1>Toki Pona Dictionary</h1>
@@ -12,6 +13,7 @@
         <thead>
             <tr>
                 <th>Word</th>
+                <th>Sitelen Pona</th>
                 <th>Definition</th>
             </tr>
         </thead>
@@ -19,6 +21,7 @@
             @foreach (var word in matchingWords) {
                 <tr>
                     <td>@word.Name</td>
+                    <td class="tokipona">@word.HieroglyphicName</td>
                     <td>@word.Definition</td>
                 </tr>
             }
@@ -33,7 +36,8 @@
 
     private void OnChangeSearch(ChangeEventArgs e) {
         CurrentSearch = e.Value.ToString().Trim().ToLowerInvariant();
-        matchingWords = words.Where(w => w.Name.Contains(CurrentSearch) || w.Definition.Contains(CurrentSearch)).ToArray();
+        matchingWords = words.OrderBy(w => WordHelpers.SearchDistance(CurrentSearch, w.Name, w.Definition)).ToArray();
+        Console.WriteLine(string.Join(',', matchingWords.Select(w => $"{w.Name}({WordHelpers.SearchDistance(CurrentSearch, w.Name, w.Definition)})").ToList()));
     }
 
     protected override async Task OnInitializedAsync() {
@@ -43,6 +47,14 @@
 
     public class Word {
         public string Name { get; set; }
+        public string HieroglyphicName {
+            get {
+                if (Name == "kin") {
+                    return "a";
+                }
+                return Name;
+            }
+        }
         public string Definition { get; set; }
     }
 }
