@@ -20,6 +20,15 @@ app {
     flex-direction: column;
 }
 
+.tokipona {
+    font-family: 'linjapimeja1.9';
+    src: url('linjapimeja19.woff2') format('woff2'),
+        url('linjapimeja19.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-size: 32pt;
+}
+
 .top-row {
     height: 3.5rem;
     display: flex;
