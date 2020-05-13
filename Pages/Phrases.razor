@@ -1,0 +1,60 @@
+﻿@page "/phrases"
+@using System.Linq;
+@using System.Text.RegularExpressions;
+@inject HttpClient Http
+
+<h1>Toki Pona Phrases</h1>
+
+<input name="search" @onchange="@((ChangeEventArgs __e) => OnChangeSearch(__e))" width="80%">
+
+@if (sentences == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Toki Pona</th>
+                <th>Sitelen Pona</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sentence in matchingSentences) {
+                <tr>
+                    <td>@sentence.From</td>
+                    <td class="tokipona">@sentence.HieroglyphicFrom</td>
+                    <td>@sentence.To</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public string CurrentSearch;
+    private Sentence[] matchingSentences;
+    private Sentence[] sentences;
+
+    private void OnChangeSearch(ChangeEventArgs e) {
+        CurrentSearch = e.Value.ToString().Trim().ToLowerInvariant();
+        string[] searchWords = CurrentSearch.Split(new char[]{' ', ',', ';', '-', '\n', '\t'}, StringSplitOptions.RemoveEmptyEntries);
+        matchingSentences = sentences.Where(s => searchWords.All(w => s.To.ToLowerInvariant().Contains(w)))
+                                     .OrderBy(s => WordHelpers.LevenshteinDistance(CurrentSearch, s.To.ToLowerInvariant())).ToArray();
+        Console.WriteLine(string.Join(',', matchingSentences.Select(w => $"{w.From}({WordHelpers.SearchDistance(CurrentSearch, w.From, w.To)})").ToList()));
+    }
+
+    protected override async Task OnInitializedAsync() {
+        sentences = await Http.GetFromJsonAsync<Sentence[]>("data/sentences.json");
+        matchingSentences = sentences;
+    }
+
+    public class Sentence {
+        public string From { get; set; }
+        public string HieroglyphicFrom {
+            get {
+                return Regex.Replace(Regex.Replace(From, @"\bkin\b", "a"), @"\b[A-Z]\w+\b", m => m.ToString().ToUpper());
+            }
+        }
+        public string To { get; set; }
+    }
+}

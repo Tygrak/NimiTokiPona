@@ -1,6 +1,25 @@
 ﻿@inherits LayoutComponentBase
 
+<head>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+</head>
+
 <div class="main">
+    <div class="top-navbar">
+        <ul>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span aria-hidden="true"></span> Home
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="phrases">
+                    <span aria-hidden="true"></span> Phrases
+                </NavLink>
+            </li>
+        </ul>
+    </div>
     <div class="content px-4">
         @Body
     </div>

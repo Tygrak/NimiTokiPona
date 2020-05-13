@@ -33,6 +33,33 @@ app {
     font-size: 32pt;
 }
 
+.top-navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+  
+.top-navbar li {
+    float: left;
+}
+  
+.top-navbar li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.top-navbar li a:hover:not(.active) {
+    font-weight: normal;
+}
+
+.top-navbar .active {
+    font-weight: bold;
+}
+
 .top-row {
     height: 3.5rem;
     display: flex;
