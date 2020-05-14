@@ -5,7 +5,13 @@
 
 <h1>Toki Pona Phrases</h1>
 
-<input name="search" @onchange="@((ChangeEventArgs __e) => OnChangeSearch(__e))" width="80%">
+<div class="searchbar">
+    <input class="searchbox" placeholder="search..." @onchange=@OnChangeSearch> 
+    <select @onchange=@OnChangeFromTo>
+        <option value="English -> Toki Pona">English -> Toki Pona</option>
+        <option value="Toki Pona -> English">Toki Pona -> English</option>
+    </select>
+</div>
 
 @if (sentences == null) {
     <p><em>Loading...</em></p>
@@ -31,21 +37,45 @@
 }
 
 @code {
-    public string CurrentSearch;
+    public bool FromEnglish = true;
+    public string CurrentSearch = "";
     private Sentence[] matchingSentences;
     private Sentence[] sentences;
 
     private void OnChangeSearch(ChangeEventArgs e) {
         CurrentSearch = e.Value.ToString().Trim().ToLowerInvariant();
+        UpdateSearch();
+    }
+
+    private void UpdateSearch() {
         string[] searchWords = CurrentSearch.Split(new char[]{' ', ',', ';', '-', '\n', '\t'}, StringSplitOptions.RemoveEmptyEntries);
-        matchingSentences = sentences.Where(s => searchWords.All(w => s.To.ToLowerInvariant().Contains(w)))
-                                     .OrderBy(s => WordHelpers.LevenshteinDistance(CurrentSearch, s.To.ToLowerInvariant())).ToArray();
-        Console.WriteLine(string.Join(',', matchingSentences.Select(w => $"{w.From}({WordHelpers.SearchDistance(CurrentSearch, w.From, w.To)})").ToList()));
+        if (FromEnglish) {
+            matchingSentences = sentences.Where(s => searchWords.All(w => s.To.ToLowerInvariant().Contains(w)))
+                                         .OrderBy(s => WordHelpers.LevenshteinDistance(CurrentSearch, s.To.ToLowerInvariant())).ToArray();
+        } else {
+            matchingSentences = sentences.Where(s => searchWords.All(w => s.From.ToLowerInvariant().Contains(w)))
+                                         .OrderBy(s => WordHelpers.LevenshteinDistance(CurrentSearch, s.From.ToLowerInvariant())).ToArray();
+        }
+    }
+
+    private void OnChangeFromTo(ChangeEventArgs e) {
+        string value = e.Value.ToString().Trim();
+        bool result;
+        Console.WriteLine(value);
+        if (value == "English -> Toki Pona") {
+            result = true;
+        } else {
+            result = false;
+        }
+        if (FromEnglish != result) {
+            FromEnglish = result;
+        }
+        Console.WriteLine(FromEnglish);
     }
 
     protected override async Task OnInitializedAsync() {
         sentences = await Http.GetFromJsonAsync<Sentence[]>("data/sentences.json");
-        matchingSentences = sentences;
+        matchingSentences = sentences.Skip(11).Take(10).ToArray();
     }
 
     public class Sentence {

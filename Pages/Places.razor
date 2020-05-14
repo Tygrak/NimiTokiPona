@@ -1,0 +1,66 @@
+﻿@page "/places"
+@using System.Linq;
+@using System.Text.RegularExpressions;
+@inject HttpClient Http
+
+<h1>Toki Pona Places</h1>
+
+<div class="searchbar">
+    <input class="searchbox" placeholder="search..." @onchange=@OnChangeSearch>
+</div>
+
+@if (places == null) {
+    <p><em>Loading...</em></p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Sitelen Pona</th>
+                <th>Definition</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var word in matchingPlaces) {
+                <tr>
+                    <td>@word.TokiPonaFrom</td>
+                    <td><span class="tokipona" style="font-size: 1rem;">ma </span><span >@word.From</span></td>
+                    <td>@word.To</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    public string CurrentSearch;
+    private Place[] matchingPlaces;
+    private Place[] places;
+
+    private void OnChangeSearch(ChangeEventArgs e) {
+        CurrentSearch = e.Value.ToString().Trim().ToLowerInvariant();
+        string search = CurrentSearch.ToLowerInvariant().TrimEnd().Replace("?", "").Replace("!", "");
+        search = Regex.Replace(search, @"^\s*ma\s+", "");
+        matchingPlaces = places.OrderBy(w => WordHelpers.PlaceDistance(search, w.From, w.To)).ToArray();
+    }
+
+    protected override async Task OnInitializedAsync() {
+        places = await Http.GetFromJsonAsync<Place[]>("data/places.json");
+        matchingPlaces = places;
+    }
+
+    public class Place {
+        public string From { get; set; }
+        public string TokiPonaFrom {
+            get {
+                return "ma "+From;
+            }
+        }
+        public string HieroglyphicFrom {
+            get {
+                return "ma "+From.ToUpper();
+            }
+        }
+        public string To { get; set; }
+    }
+}

@@ -26,6 +26,16 @@ app {
     flex-direction: column;
 }
 
+.searchbar {
+    margin: 20px;
+}
+
+.searchbox {
+    min-width: 10em;
+    width: 20em;
+    max-width: 50em;
+}
+
 .tokipona {
     font-family: 'linjapimeja1.9';
     font-weight: 500;

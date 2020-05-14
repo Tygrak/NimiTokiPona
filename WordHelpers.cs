@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +36,6 @@ namespace NimiTokiPona {
         }
 
         public static float SearchDistance(string search, string name, string definition) {
-            search = search.ToLowerInvariant().Trim().Replace("?", "").Replace("!", "");
             name = name.ToLowerInvariant();
             definition = definition.ToLowerInvariant();
             float distance = LevenshteinDistance(search, name);
@@ -46,12 +46,18 @@ namespace NimiTokiPona {
             }
             string[] searchWords = search.Split(new char[]{' ', ',', ';', '-', '\n', '\t'}, StringSplitOptions.RemoveEmptyEntries);
             string[] definitionWords = definition.Split(new char[]{' ', ',', ';', '-', '?', '!', '\n', '\t'}, StringSplitOptions.RemoveEmptyEntries);
-            //Console.WriteLine(string.Join(',', definitionWords));
             if (searchWords.All(s => definitionWords.Contains(s))) {
                 distance = Math.Min(distance, 0.5f);
             } else if (searchWords.Any(s => definitionWords.Contains(s))) {
                 distance = Math.Min(distance, 2f);
             }
+            return distance;
+        }
+
+        public static float PlaceDistance(string search, string tokiPona, string english) {
+            tokiPona = tokiPona.ToLowerInvariant();
+            english = english.ToLowerInvariant();
+            float distance = Math.Min(LevenshteinDistance(search, tokiPona), LevenshteinDistance(search, english));
             return distance;
         }
     }

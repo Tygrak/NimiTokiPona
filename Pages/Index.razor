@@ -4,7 +4,9 @@
 
 <h1>Toki Pona Dictionary</h1>
 
-<input name="search" @onchange="@((ChangeEventArgs __e) => OnChangeSearch(__e))" width="80%">
+<div class="searchbar">
+    <input class="searchbox" placeholder="search..." @onchange=@OnChangeSearch>
+</div>
 
 @if (words == null) {
     <p><em>Loading...</em></p>
@@ -36,8 +38,8 @@
 
     private void OnChangeSearch(ChangeEventArgs e) {
         CurrentSearch = e.Value.ToString().Trim().ToLowerInvariant();
-        matchingWords = words.OrderBy(w => WordHelpers.SearchDistance(CurrentSearch, w.Name, w.Definition)).ToArray();
-        Console.WriteLine(string.Join(',', matchingWords.Select(w => $"{w.Name}({WordHelpers.SearchDistance(CurrentSearch, w.Name, w.Definition)})").ToList()));
+        string search = CurrentSearch.ToLowerInvariant().Trim().Replace("?", "").Replace("!", "");
+        matchingWords = words.OrderBy(w => WordHelpers.SearchDistance(search, w.Name, w.Definition)).ToArray();
     }
 
     protected override async Task OnInitializedAsync() {
